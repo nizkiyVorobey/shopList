@@ -19,6 +19,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
         Log.d("Recreate_ViewHolder", "${++cpunt}")
@@ -42,6 +43,10 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         holder.itemView.setOnLongClickListener {
             onShopItemLongClickListener?.invoke(shopItem)
             return@setOnLongClickListener true
+        }
+
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.invoke(shopItem)
         }
 
 //        if (shopItem.enabled) {
