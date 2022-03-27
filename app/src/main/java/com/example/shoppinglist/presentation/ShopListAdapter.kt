@@ -5,24 +5,41 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 
 class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
-    var cpunt = 0
+    var count = 0
 
     var shopList = listOf<ShopItem>()
         set(value) {
+            val callback = ShopListDiffCallback(shopList, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            /**
+             * У diffResult вже є всі зміни які треба зробити recyclerView, щоб їх виконати,
+             * реба викликати метод dispatchUpdatesTo і передати туди адаптер. А оскільки ми вже знаходимося
+             * в адаптері. то передаємо просто this. Це треба використовуваи заміть notifyDataSetChanged.
+             * Тепер на видалення буде викликано метод notifyItemRemoved, а якщо змінився, то notifyItemChanged, і т.д
+             */
+            diffResult.dispatchUpdatesTo(this)
+
             field = value
-            notifyDataSetChanged()
+
+            /**
+             * ЧОМУ НЕ ВАРТО ВИКОРИСТОВУВАТИ notifyDataSetChanged
+             * на будь-яку зміну у нас буде перестоверно наш список, тобто наш recylcerView на кожні зміну буде
+             * 10 раз викликати стоврення View Holder. Але навіщо нам перестоврювати всі 10 елементів, якщо
+             * змінився тільки один
+             */
+//            notifyDataSetChanged()
         }
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        Log.d("Recreate_ViewHolder", "${++cpunt}")
         val layout = when (viewType) {
             VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
             VIEW_TYPE_DISABLED -> R.layout.item_shop_disabled
@@ -35,6 +52,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
+        Log.d("ShopListAdapter", "Recreate_ViewHolder, count: ${++count}")
+
         val shopItem = shopList[position]
 
         holder.itemShopName.text = shopItem.name
