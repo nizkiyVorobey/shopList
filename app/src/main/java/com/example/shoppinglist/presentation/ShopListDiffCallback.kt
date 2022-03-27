@@ -3,7 +3,7 @@ package com.example.shoppinglist.presentation
 import androidx.recyclerview.widget.DiffUtil
 import com.example.shoppinglist.domain.ShopItem
 
-// Це клас, який проводить порівняння старого і нового об'єкту
+// Це клас, який проводить порівняння старого і нового об'єкту. Використовувався у RecyclerView Adapter
 class ShopListDiffCallback(
     private val oldList: List<ShopItem>,
     private val newList: List<ShopItem>
