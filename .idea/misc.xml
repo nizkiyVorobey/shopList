@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.3525" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.12" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_shop_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_shop_disabled.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_shop_enabled.xml" value="0.335" />
       </map>
@@ -17,5 +18,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.125" />
+      </ProjectState>
+    </option>
   </component>
 </project>
