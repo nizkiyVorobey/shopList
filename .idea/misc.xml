@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.12" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_shop_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_shop_item.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/item_shop_disabled.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_shop_enabled.xml" value="0.335" />
       </map>
