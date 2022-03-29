@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShopItemActivity">
+    tools:context=".presentation.ShopItemActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/shop_item_name"
@@ -23,6 +23,7 @@
         app:layout_constraintVertical_chainStyle="packed">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_shop_item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Good"
@@ -39,13 +40,14 @@
         app:boxCornerRadiusTopStart="5dp"
         app:endIconMode="clear_text"
         app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/shop_item_save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_item_name">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_shop_item_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Count"
@@ -54,7 +56,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/shop_item_save"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"

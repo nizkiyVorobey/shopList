@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShoppingList</string>
+    <string name="error_shop_item_edit_count">Не вірно вказана кількість</string>
+    <string name="error_shop_item_edit_name">Не вірно вказана назва</string>
 </resources>

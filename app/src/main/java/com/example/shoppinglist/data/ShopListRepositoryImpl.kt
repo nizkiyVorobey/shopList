@@ -14,14 +14,14 @@ import kotlin.random.Random
 object ShopListRepositoryImpl : ShopListRepository {
     private val shopListLD = MutableLiveData<List<ShopItem>>()
 
-    //    private val shopList = mutableListOf<ShopItem>()
+    // Сорутємо при кожній зміні shopList по id, щоб змінений item не потрапляв до низу списку
     private val shopList = sortedSetOf<ShopItem>({ o1, o2 -> o1.id.compareTo(o2.id) })
 
 
     private var autoIncrementId = 0
 
     init {
-        for (i in 0..10_00) {
+        for (i in 0..1_0) {
             val item = ShopItem("Name $i", i, Random.nextBoolean())
             addShopItem(item)
         }
@@ -48,7 +48,6 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     override fun getShopList(): LiveData<List<ShopItem>> {
-//        return shopList.toList() // .toList create copy of shopList. This more safety, we can't mutate the collection out of this class
         return shopListLD
     }
 
@@ -58,6 +57,6 @@ object ShopListRepositoryImpl : ShopListRepository {
     }
 
     private fun updateList() {
-        shopListLD.postValue(shopList.toList())
+        shopListLD.postValue(shopList.toList()) // .toList create copy of shopList. This more safety, we can't mutate the collection out of this class
     }
 }
