@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.lang.Exception
 import java.lang.RuntimeException
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -25,7 +25,14 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-        launchRightMode()
+        /**
+         * Ми маємо створити Fragment лише один раз, відповідно якщо ми будемо просто стоврювати його в onCreate то при перевороті
+         * екрану у нас буде створено два фрагмента, один сворить система, інший ми.Тож ми можемо додати перевірку, якщо savedInstanceState == null
+         * то Ativity не пересвторювалась
+         */
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
     }
 
 
@@ -56,7 +63,7 @@ class ShopItemActivity : AppCompatActivity() {
             else -> throw RuntimeException("Unknown screen mode $screenMode")
         }
         supportFragmentManager.beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shop_item_container, fragment)
             .commit() // запустить транзакцію на виконання
     }
 
@@ -83,5 +90,9 @@ class ShopItemActivity : AppCompatActivity() {
 
             return intent
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 }

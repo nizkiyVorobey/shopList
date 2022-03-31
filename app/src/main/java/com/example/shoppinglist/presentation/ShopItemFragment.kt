@@ -1,5 +1,6 @@
 package com.example.shoppinglist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,14 +18,26 @@ import java.lang.RuntimeException
 
 class ShopItemFragment : Fragment() {
     private lateinit var viewModel: ShopItemViewModel
-    private var screenMode = MODE_UNKNOWN
-    private var shopItemId = ShopItem.UNDEFINED_ID
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     private lateinit var shopItemName: TextInputLayout
     private lateinit var shopItemCount: TextInputLayout
     private lateinit var editItemName: EditText
     private lateinit var editItemCount: EditText
     private lateinit var shopItemSave: Button
+
+    private var screenMode = MODE_UNKNOWN
+    private var shopItemId = ShopItem.UNDEFINED_ID
+
+    // Викликається коли фрагмент прикріпляється до Activity
+    override fun onAttach(context: Context) { // context це наша Activity
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must  implement listener OnEditingFinishedListener")
+        }
+    }
 
     // Викликається коли створено Fragment
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,14 +63,17 @@ class ShopItemFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
-        }
-
         initViews(view)
         launchRightMode()
         observeInputErrors()
         addTextChangeListeners()
+        observeCloseFragment()
+    }
+
+    private fun observeCloseFragment() {
+        viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
+            onEditingFinishedListener.onEditingFinished()
+        }
     }
 
     private fun parseParams() {
@@ -164,6 +180,9 @@ class ShopItemFragment : Fragment() {
         })
     }
 
+    interface OnEditingFinishedListener {
+        fun onEditingFinished()
+    }
 
     companion object {
         private const val SCREEN_MODE = "extra_mode"
