@@ -7,6 +7,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.ShopListRepositoryImpl
 import com.example.shoppinglist.domain.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -15,6 +19,8 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val getShopItemUseCase = GetShopItemUseCase(repository)
     private val editShopItemUseCase = EditShopItemUseCase(repository)
     private val addShopItemUseCase = AddShopItemUseCase(repository)
+
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     /**
      * Оскілкьки ми хочемо в середені ViewModel працювати з MutableLiveData, а з Activity заборонити встановлювати значення
@@ -29,7 +35,6 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     val errorInputCount: LiveData<Boolean>
         get() = _errorInputCount
 
-
     private val _shopItem = MutableLiveData<ShopItem>()
     val shopItem: LiveData<ShopItem>
         get() = _shopItem
@@ -40,8 +45,10 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
 
     fun getShopItem(shopItemId: Int) {
-        val item = getShopItemUseCase.getShopItem(shopItemId)
-        _shopItem.postValue(item)
+        scope.launch {
+            val item = getShopItemUseCase.getShopItem(shopItemId)
+            _shopItem.postValue(item)
+        }
     }
 
     fun editShopItem(inputName: String?, inputCount: String?) {
@@ -53,7 +60,9 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
             val shopItem = _shopItem.value
             shopItem?.let {
                 val newShopItem = it.copy(name = name, count = count)
-                editShopItemUseCase.editShopItem(newShopItem)
+                scope.launch {
+                    editShopItemUseCase.editShopItem(newShopItem)
+                }
             }
 
             finishWork()
@@ -68,7 +77,9 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
         if (isFieldsValid) {
             val newShopItem = ShopItem(name = name, count = count, enabled = true)
-            addShopItemUseCase.addShopItem(newShopItem)
+            scope.launch {
+                addShopItemUseCase.addShopItem(newShopItem)
+            }
             finishWork()
         }
     }
@@ -110,5 +121,10 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     private fun finishWork() {
         _shouldCloseScreen.postValue(Unit)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        scope.cancel()
     }
 }
