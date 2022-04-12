@@ -1,20 +1,19 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.main
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shoppinglist.data.ShopListRepositoryImpl
 import com.example.shoppinglist.domain.DeleteShopItemUseCase
-import com.example.shoppinglist.domain.EditShopItemUseCase
 import com.example.shoppinglist.domain.GetShopListUseCase
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.domain.modify.EditShopItemUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
+class ShopListViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ShopListRepositoryImpl(application)
 
     private val getShopListUseCase = GetShopListUseCase(repository)
@@ -42,7 +41,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
          * у метода onCleared за нас
          */
         viewModelScope.launch {
-            editShopItemUseCase.editShopItem(editedShopItem)
+            // FIXME: change implementation according to new use case hierarchy
+//            editShopItemUseCase.editShopItem(editedShopItem)
         }
     }
 

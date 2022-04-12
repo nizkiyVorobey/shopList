@@ -3,6 +3,7 @@ package com.example.shoppinglist.data
 import com.example.shoppinglist.domain.ShopItem
 
 class ShopListMapper {
+
     fun mapEntityToDbMode(shopItem: ShopItem): ShopItemDbModel = ShopItemDbModel(
         id = shopItem.id,
         name = shopItem.name,

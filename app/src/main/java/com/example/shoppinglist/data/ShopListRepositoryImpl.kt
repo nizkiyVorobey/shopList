@@ -1,6 +1,5 @@
 package com.example.shoppinglist.data
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.example.shoppinglist.domain.ShopItem
@@ -11,11 +10,11 @@ import com.example.shoppinglist.domain.ShopListRepository
  * Це потрібно, щоб не вийшло так, що на одному екрані ми працюємо з одним репозиторієм, а на іншому з іншим
  */
 class ShopListRepositoryImpl(
-    application: Application
+    db: AppDatabase,
+    private val mapper: ShopListMapper = ShopListMapper()
 ) : ShopListRepository {
-    private val shopListDao = AppDatabase.getInstance(application).shopListDao()
-    private val mapper = ShopListMapper()
 
+    private val shopListDao = db.shopListDao()
 
     override suspend fun addShopItem(item: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbMode(item))
@@ -25,7 +24,7 @@ class ShopListRepositoryImpl(
         shopListDao.deleteShopItem(item.id)
     }
 
-    override suspend  fun editShopItem(item: ShopItem) {
+    override suspend fun editShopItem(item: ShopItem) {
         shopListDao.addShopItem(mapper.mapEntityToDbMode(item))
     }
 
@@ -47,7 +46,8 @@ class ShopListRepositoryImpl(
     /**
      * Transformations теж саме що MediatorLiveData, але лише для зміни типів, під капотом використовує той же MediatorLiveData
      */
-    override fun getShopList(): LiveData<List<ShopItem>> = Transformations.map(shopListDao.getShopList()) {
-        mapper.mapListDbModelToListEntity(it)
-    }
+    override fun getShopList(): LiveData<List<ShopItem>> =
+        Transformations.map(shopListDao.getShopList()) {
+            mapper.mapListDbModelToListEntity(it)
+        }
 }

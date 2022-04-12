@@ -1,6 +1,5 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
+import com.example.shoppinglist.presentation.main.adapter.ShopListAdapter
+import com.example.shoppinglist.presentation.shop_item.ShopItemActivity
+import com.example.shoppinglist.presentation.shop_item.ShopItemFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.lang.RuntimeException
 
-class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
-    private lateinit var viewModel: MainViewModel
+class ShopListActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
+    private lateinit var viewModel: ShopListViewModel
     private lateinit var shopListAdapter: ShopListAdapter
     private var shopItemContainer: FragmentContainerView? = null
 
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         shopItemContainer =
             findViewById(R.id.shop_item_container) // Елемент з таким id існує тільки в альбомній орієнтаціє, для портретної він поверне null
         setupRecyclerView()
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this)[ShopListViewModel::class.java]
         viewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
         }
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
     }
 
     override fun onEditingFinished() {
-        Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_LONG).show()
+        Toast.makeText(this@ShopListActivity, "Success", Toast.LENGTH_LONG).show()
         supportFragmentManager.popBackStack()
     }
 }

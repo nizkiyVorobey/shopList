@@ -1,10 +1,12 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.main.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.presentation.shop_item.adapter.ShopItemDiffCallback
+import com.example.shoppinglist.presentation.shop_item.adapter.ShopItemViewHolder
 
 /**
  * ListAdapter робить всю роботу над shopList всередені

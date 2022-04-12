@@ -1,4 +1,4 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.shop_item
 
 import android.content.Context
 import android.os.Bundle
@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.textfield.TextInputLayout
-import java.lang.RuntimeException
 
 class ShopItemFragment : Fragment() {
+
     private lateinit var viewModel: ShopItemViewModel
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
@@ -115,7 +115,10 @@ class ShopItemFragment : Fragment() {
 
     private fun launchAddMode() {
         shopItemSave.setOnClickListener {
-            viewModel.addShopItem(editItemName.text?.toString(), editItemCount.text?.toString())
+            viewModel.addShopItem(
+                inputName = editItemName.text?.toString(),
+                inputCount = editItemCount.text?.toString()
+            )
         }
     }
 
