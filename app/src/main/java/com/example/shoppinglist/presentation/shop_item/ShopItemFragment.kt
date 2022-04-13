@@ -2,8 +2,6 @@ package com.example.shoppinglist.presentation.shop_item
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +10,20 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
+import com.example.shoppinglist.di.ShopListViewModelFactory
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.domain.lazySimple
+import com.example.shoppinglist.domain.setAfterTextChange
+import com.example.shoppinglist.domain.setOnTextChange
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment : Fragment() {
 
-    private lateinit var viewModel: ShopItemViewModel
-    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+    private val viewModel: ShopItemViewModel by lazySimple {
+        ViewModelProvider(this, ShopListViewModelFactory())[ShopItemViewModel::class.java]
+    }
 
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
     private lateinit var shopItemName: TextInputLayout
     private lateinit var shopItemCount: TextInputLayout
     private lateinit var editItemName: EditText
@@ -62,7 +66,6 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
         launchRightMode()
         observeInputErrors()
@@ -136,7 +139,6 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun observeInputErrors() {
-
         viewModel.errorInputName.observe(viewLifecycleOwner) {
             if (it) {
                 shopItemName.error = getString(R.string.error_shop_item_edit_name)
@@ -144,7 +146,6 @@ class ShopItemFragment : Fragment() {
                 shopItemName.error = null
             }
         }
-
         viewModel.errorInputCount.observe(viewLifecycleOwner) {
             if (it) {
                 shopItemCount.error = getString(R.string.error_shop_item_edit_count)
@@ -156,31 +157,8 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun addTextChangeListeners() {
-        editItemName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetErrorInputName()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-
-        editItemCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                viewModel.resetErrorInputCount()
-            }
-
-        })
+        editItemName.setOnTextChange { viewModel.resetErrorInputName() }
+        editItemCount.setAfterTextChange { viewModel.resetErrorInputCount() }
     }
 
     interface OnEditingFinishedListener {

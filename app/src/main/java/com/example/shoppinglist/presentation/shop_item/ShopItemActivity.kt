@@ -6,9 +6,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.presentation.shop_item.delegate.ScreenModeDelegate
+import com.example.shoppinglist.presentation.shop_item.delegate.ScreenModeDelegate.Companion.MODE_ADD
+import com.example.shoppinglist.presentation.shop_item.delegate.ScreenModeDelegate.Companion.MODE_EDIT
 
 class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
-    private var screenMode = MODE_UNKNOWN
+    private val intentParser = ScreenModeDelegate()
+    private val screenMode by intentParser
+
     private var shopItemId = ShopItem.UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,16 +31,7 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
     }
 
     private fun parseIntent() {
-        if (!intent.hasExtra(EXTRA_SCREEN_MODE)) {
-            throw RuntimeException("param screen mode is absent")
-        }
-
-        val mode = intent.getStringExtra(EXTRA_SCREEN_MODE)
-        if (mode != MODE_EDIT && mode != MODE_ADD) {
-            throw RuntimeException("unknown param screen mode $mode")
-        }
-
-        screenMode = mode
+        intentParser.intent = intent
 
         if (screenMode == MODE_EDIT) {
             if (!intent.hasExtra(EXTRA_SHOP_ITEM_ID)) {
@@ -58,12 +54,8 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
 
 
     companion object {
-
         private const val EXTRA_SCREEN_MODE = "extra_mode"
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
-        private const val MODE_EDIT = "mode_edit"
-        private const val MODE_ADD = "mode_add"
-        private const val MODE_UNKNOWN = ""
 
         fun newIntentAddItem(context: Context): Intent {
             val intent = Intent(context, ShopItemActivity::class.java)

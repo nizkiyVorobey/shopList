@@ -1,10 +1,8 @@
 package com.example.shoppinglist.presentation.shop_item
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.shoppinglist.data.ShopListRepositoryImpl
+import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.domain.GetShopItemUseCase
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.domain.model.ModifyShopItemResult.Success
@@ -16,14 +14,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-
-    // FIXME: add custom DI
-    private val repository = ShopListRepositoryImpl(application)
-
-    private val getShopItemUseCase = GetShopItemUseCase(repository)
-    private val editShopItemUseCase = EditShopItemUseCase(repository)
-    private val addShopItemUseCase = AddShopItemUseCase(repository)
+class ShopItemViewModel(
+    private val getUseCase: GetShopItemUseCase,
+    private val editUseCase: EditShopItemUseCase,
+    private val addUseCase: AddShopItemUseCase,
+) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -31,6 +26,16 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
      * Оскілкьки ми хочемо в середені ViewModel працювати з MutableLiveData, а з Activity заборонити встановлювати значення
      * то нам підійде варіант створити _errorInputName для ViewModel з типом MutableLiveData, а от для Activity в нас
      * буде errorInputName у якої ми перевизначемо getter
+     */
+
+    /*
+        ShopItemState{
+           nameError: Boolean,
+           countError: Boolean,
+           item: ShopItem
+           shouldCloseScreen: Unit
+        }
+        LiveData<ShopItemState>
      */
     private val _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean> = _errorInputName
@@ -44,16 +49,18 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val _shouldCloseScreen = MutableLiveData<Unit>()
     val shouldCloseScreen: LiveData<Unit> = _shouldCloseScreen
 
+    // Ui -> Action -> ViewModel[State] -> state(modify) ->
+
     fun getShopItem(shopItemId: Int) {
         scope.launch {
-            val item = getShopItemUseCase.getShopItem(shopItemId)
+            val item = getUseCase.getShopItem(shopItemId)
             _shopItem.postValue(item)
         }
     }
 
     fun editShopItem(inputName: String?, inputCount: String?) {
         scope.launch {
-            val result = editShopItemUseCase.editShopItem(
+            val result = editUseCase.editShopItem(
                 oldShopItem = _shopItem.value!!,
                 newName = inputName,
                 newCount = inputCount
@@ -67,7 +74,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     fun addShopItem(inputName: String?, inputCount: String?) {
         scope.launch {
-            val result = addShopItemUseCase.addShopItem(
+            val result = addUseCase.addShopItem(
                 newName = inputName,
                 newCount = inputCount
             )
