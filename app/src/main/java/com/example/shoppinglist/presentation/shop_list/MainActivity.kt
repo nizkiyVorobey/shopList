@@ -1,6 +1,5 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.shop_list
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
+import com.example.shoppinglist.presentation.modify_item.ShopItemActivity
+import com.example.shoppinglist.presentation.modify_item.ShopItemFragment
+import com.example.shoppinglist.presentation.shop_list.adapter.ShopListAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.lang.RuntimeException
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
     private lateinit var viewModel: MainViewModel

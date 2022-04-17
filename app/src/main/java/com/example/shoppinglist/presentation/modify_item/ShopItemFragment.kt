@@ -1,4 +1,4 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.modify_item
 
 import android.content.Context
 import android.os.Bundle

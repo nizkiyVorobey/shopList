@@ -1,10 +1,9 @@
-package com.example.shoppinglist.presentation
+package com.example.shoppinglist.presentation.modify_item
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.shoppinglist.data.ShopListRepositoryImpl
 import com.example.shoppinglist.domain.*
 import kotlinx.coroutines.CoroutineScope

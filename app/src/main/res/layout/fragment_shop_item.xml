@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.ShopItemFragment">
+    tools:context=".presentation.modify_item.ShopItemFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/shop_item_name"
