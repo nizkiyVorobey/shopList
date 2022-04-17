@@ -1,8 +1,9 @@
 package com.example.shoppinglist.data
 
 import com.example.shoppinglist.domain.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor() {
     fun mapEntityToDbMode(shopItem: ShopItem): ShopItemDbModel = ShopItemDbModel(
         id = shopItem.id,
         name = shopItem.name,

@@ -9,24 +9,35 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
+import com.example.shoppinglist.ShopListApplication
+import com.example.shoppinglist.presentation.ViewModelFactory
 import com.example.shoppinglist.presentation.modify_item.ShopItemActivity
 import com.example.shoppinglist.presentation.modify_item.ShopItemFragment
 import com.example.shoppinglist.presentation.shop_list.adapter.ShopListAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
+    @Inject
+    lateinit var modelFactory: ViewModelFactory
+
     private lateinit var viewModel: MainViewModel
     private lateinit var shopListAdapter: ShopListAdapter
     private var shopItemContainer: FragmentContainerView? = null
 
+    private val component by lazy {
+        (application as ShopListApplication).component
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         shopItemContainer =
             findViewById(R.id.shop_item_container) // Елемент з таким id існує тільки в альбомній орієнтаціє, для портретної він поверне null
         setupRecyclerView()
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this, modelFactory)[MainViewModel::class.java]
         viewModel.shopList.observe(this) {
             shopListAdapter.submitList(it)
         }
@@ -40,8 +51,6 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
                 val fragment = ShopItemFragment.newInstanceAddItem()
                 launchFragment(fragment)
             }
-
-
         }
     }
 

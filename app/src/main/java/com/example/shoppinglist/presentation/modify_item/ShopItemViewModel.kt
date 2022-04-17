@@ -1,23 +1,23 @@
 package com.example.shoppinglist.presentation.modify_item
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.shoppinglist.data.ShopListRepositoryImpl
-import com.example.shoppinglist.domain.*
+import androidx.lifecycle.ViewModel
+import com.example.shoppinglist.domain.AddShopItemUseCase
+import com.example.shoppinglist.domain.EditShopItemUseCase
+import com.example.shoppinglist.domain.GetShopItemUseCase
+import com.example.shoppinglist.domain.ShopItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.lang.Exception
+import javax.inject.Inject
 
-class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = ShopListRepositoryImpl(application)
-
-    private val getShopItemUseCase = GetShopItemUseCase(repository)
-    private val editShopItemUseCase = EditShopItemUseCase(repository)
-    private val addShopItemUseCase = AddShopItemUseCase(repository)
+class ShopItemViewModel @Inject constructor(
+    private val getShopItemUseCase: GetShopItemUseCase,
+    private val editShopItemUseCase: EditShopItemUseCase,
+    private val addShopItemUseCase: AddShopItemUseCase,
+) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -63,10 +63,8 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
                     editShopItemUseCase.editShopItem(newShopItem)
                 }
             }
-
             finishWork()
         }
-
     }
 
     fun addShopItem(inputName: String?, inputCount: String?) {

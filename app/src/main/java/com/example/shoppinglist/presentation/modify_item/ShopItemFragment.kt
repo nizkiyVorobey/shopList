@@ -12,11 +12,17 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppinglist.R
+import com.example.shoppinglist.ShopListApplication
 import com.example.shoppinglist.domain.ShopItem
+import com.example.shoppinglist.presentation.ViewModelFactory
 import com.google.android.material.textfield.TextInputLayout
-import java.lang.RuntimeException
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
+
+    @Inject
+    lateinit var modelFactory: ViewModelFactory
+
     private lateinit var viewModel: ShopItemViewModel
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
@@ -26,11 +32,16 @@ class ShopItemFragment : Fragment() {
     private lateinit var editItemCount: EditText
     private lateinit var shopItemSave: Button
 
+    private val component by lazy {
+        (requireActivity().application as ShopListApplication).component
+    }
+
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
     // Викликається коли фрагмент прикріпляється до Activity
     override fun onAttach(context: Context) { // context це наша Activity
+        component.inject(this)
         super.onAttach(context)
         if (context is OnEditingFinishedListener) {
             onEditingFinishedListener = context
@@ -62,7 +73,7 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        viewModel = ViewModelProvider(this, modelFactory)[ShopItemViewModel::class.java]
         initViews(view)
         launchRightMode()
         observeInputErrors()
