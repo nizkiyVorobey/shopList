@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
 import com.example.shoppinglist.ShopListApplication
 import com.example.shoppinglist.domain.ShopItem
 import kotlinx.coroutines.CoroutineScope
@@ -96,8 +95,18 @@ class ShoppingListProvider : ContentProvider() {
         return null
     }
 
-    override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        TODO("Not yet implemented")
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
+        // DELETE FROM shop_items WHERE id = :id AND name = :name
+        // selection - це те, що WHERE, тобто - це id = :id AND name = :name, але воно у вигляді id = ? AND name = ?
+        // selectionArgs - 5, "Twix" - це значення для selection
+        when (uriMatcher.match(uri)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                val id = selectionArgs?.get(0)?.toInt() ?: -1
+                return shopListDao.deleteShopItemSync(id)
+            }
+        }
+
+        return 0
     }
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
