@@ -23,6 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".data.ShoppingListProvider"
+            android:authorities="com.example.shoppinglist"
+            android:exported="true" />
     </application>
 
 </manifest>
